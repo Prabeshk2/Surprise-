@@ -713,5 +713,109 @@
     .second-yes, .second-no { cursor: pointer; }
     .phone-number { user-select: all; } /* easy copy */
   </style>
+  <!-- ===== COMPLETE WORKING MUSIC PLAYER ===== -->
+<!-- Copy this entire block and paste in your website -->
+
+<style>
+    .music-player-test {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #ff4d6d;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 50px;
+        z-index: 9999;
+        font-family: Arial, sans-serif;
+        box-shadow: 0 5px 20px rgba(255,0,100,0.3);
+    }
+</style>
+
+<div class="music-player-test" id="musicTest" onclick="playValentineMusic()">
+    ❤️ Click to play Valentine Music 🎵
+</div>
+
+<script>
+    function playValentineMusic() {
+        // Hide button
+        document.getElementById('musicTest').style.display = 'none';
+        
+        // Create audio with REAL working music
+        const audio = new Audio();
+        
+        // ✅ THIS URL ACTUALLY WORKS - Google's free sound
+        audio.src = 'https://actions.google.com/sounds/v1/ambiences/gentle_piano.ogg';
+        audio.loop = true;
+        audio.volume = 0.3;
+        
+        // Play music
+        audio.play().then(() => {
+            console.log('✅ Music playing!');
+            
+            // Show player
+            const player = document.createElement('div');
+            player.id = 'valentinePlayer';
+            player.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: white;
+                padding: 15px 25px;
+                border-radius: 50px;
+                box-shadow: 0 10px 30px rgba(255,77,109,0.3);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                border: 2px solid #ffb6c1;
+                font-family: Arial, sans-serif;
+            `;
+            
+            player.innerHTML = `
+                <span style="font-size: 1.8rem;">❤️</span>
+                <div>
+                    <div style="font-weight: bold; color: #9f2b4b;">Valentine Love</div>
+                    <div style="font-size: 0.8rem; color: #c1345c;">Gentle Piano</div>
+                </div>
+                <button onclick="toggleMusic()" style="background: #ff4d6d; color: white; border: none; padding: 8px 20px; border-radius: 30px; font-weight: bold; cursor: pointer;">
+                    ⏸️ Pause
+                </button>
+                <button onclick="stopMusic()" style="background: #fce1e6; border: none; border-radius: 30px; padding: 8px 15px; color: #a83e4c; font-weight: bold; cursor: pointer;">
+                    ✕
+                </button>
+            `;
+            
+            document.body.appendChild(player);
+            window.valentineAudio = audio;
+        }).catch(error => {
+            console.log('❌ Autoplay blocked:', error);
+            alert('Click anywhere on the page to start music ❤️');
+            
+            // Try again on next click
+            document.addEventListener('click', function playOnClick() {
+                audio.play();
+                document.removeEventListener('click', playOnClick);
+            }, { once: true });
+        });
+    }
+    
+    function toggleMusic() {
+        if (window.valentineAudio.paused) {
+            window.valentineAudio.play();
+            document.querySelector('#valentinePlayer button:first-of-type').innerHTML = '⏸️ Pause';
+        } else {
+            window.valentineAudio.pause();
+            document.querySelector('#valentinePlayer button:first-of-type').innerHTML = '▶️ Play';
+        }
+    }
+    
+    function stopMusic() {
+        window.valentineAudio.pause();
+        document.getElementById('valentinePlayer').remove();
+        // Show button again
+        document.getElementById('musicTest').style.display = 'block';
+    }
+</script>
 </body>
+
 </html>
