@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>will you be my Valentine? 💖</title>
+  <!-- fonts & base styling -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      cursor: default;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: linear-gradient(145deg, #ffe9f4 0%, #ffe0ea 100%);
+      font-family: 'Quicksand', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: relative;
+      padding: 20px 16px;
+      width: 100%;
+    }
+
+    /* ---- moving heart balloons container ---- */
+    .heart-balloons {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: clamp(1.8rem, 7vw, 2.8rem);
+      opacity: 0.7;
+      filter: drop-shadow(0 8px 12px rgba(255, 80, 120, 0.2));
+      animation: floatAround 18s infinite alternate ease-in-out;
+      will-change: transform;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .heart:nth-child(1) { top: 5%; left: 3%; animation-duration: 21s; animation-delay: -2s; }
+    .heart:nth-child(2) { top: 75%; left: 2%; animation-duration: 19s; animation-delay: -5s; }
+    .heart:nth-child(3) { top: 40%; left: 88%; animation-duration: 24s; animation-delay: -1s; }
+    .heart:nth-child(4) { top: 85%; right: 5%; animation-duration: 20s; animation-delay: -10s; }
+    .heart:nth-child(5) { top: 15%; left: 70%; animation-duration: 26s; animation-delay: -7s; }
+    .heart:nth-child(6) { top: 60%; left: 45%; animation-duration: 22s; animation-delay: -3s; }
+    .heart:nth-child(7) { top: 10%; left: 90%; animation-duration: 25s; animation-delay: -12s; }
+    .heart:nth-child(8) { top: 30%; left: 12%; animation-duration: 18s; animation-delay: -4s; }
+    .heart:nth-child(9) { top: 92%; left: 55%; animation-duration: 23s; animation-delay: -8s; }
+    .heart:nth-child(10) { top: 50%; left: 78%; animation-duration: 27s; animation-delay: -15s; }
+
+    @keyframes floatAround {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(-10px, -18px) rotate(-6deg); }
+      50% { transform: translate(14px, -25px) rotate(5deg); }
+      75% { transform: translate(-8px, 15px) rotate(8deg); }
+      100% { transform: translate(15px, -12px) rotate(-3deg); }
+    }
+
+    /* ---- main card (fluid, scrollable content) ---- */
+    .valentine-card {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: clamp(32px, 10vw, 56px);
+      padding: clamp(1.5rem, 7vw, 2.8rem) clamp(1.2rem, 5vw, 2.2rem);
+      max-width: 780px;
+      width: 100%;
+      margin: 10px auto 40px;
+      box-shadow: 0 25px 45px rgba(245, 95, 140, 0.22);
+      border: 1.5px solid rgba(255, 220, 230, 0.7);
+      text-align: center;
+      position: relative;
+      z-index: 20;
+      transition: all 0.3s ease;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 8vw, 2.6rem);
+      font-weight: 700;
+      color: #9f2b4b;
+      margin-bottom: clamp(0.8rem, 4vw, 1.2rem);
+      letter-spacing: -0.5px;
+      text-shadow: 2px 2px 0 rgba(255, 220, 240, 0.6);
+      word-break: break-word;
+    }
+
+    .question {
+      font-size: clamp(1.3rem, 6vw, 2rem);
+      font-weight: 600;
+      color: #c1345c;
+      margin-bottom: clamp(1.5rem, 6vw, 2.2rem);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .question span {
+      background: #ffeef2;
+      padding: clamp(6px, 2vw, 8px) clamp(16px, 5vw, 22px);
+      border-radius: 60px;
+      box-shadow: inset 0 -2px 0 #ffb6c1;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .button-pair {
+      display: flex;
+      gap: clamp(15px, 6vw, 30px);
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 20px 0 10px;
+      position: relative;
+      min-height: 100px;
+    }
+
+    .yes-btn, .no-btn {
+      font-family: 'Quicksand', sans-serif;
+      font-size: clamp(1.4rem, 6vw, 1.9rem);
+      font-weight: 700;
+      padding: clamp(10px, 3vw, 12px) clamp(20px, 8vw, 35px);
+      border: none;
+      border-radius: 80px;
+      letter-spacing: 1px;
+      transition: 0.2s;
+      box-shadow: 0 8px 18px rgba(200, 60, 100, 0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      position: relative;
+      z-index: 30;
+      border: 2px solid #fff5f7;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 450px) {
+      .yes-btn, .no-btn {
+        white-space: normal;
+        padding: 12px 24px;
+        font-size: 1.5rem;
+      }
+    }
+
+    .yes-btn {
+      background: #ff4d6d;
+      color: white;
+      transform: scale(1.02);
+    }
+
+    .yes-btn:hover {
+      background: #ff3355;
+      transform: scale(1.08);
+    }
+
+    .yes-btn:active {
+      transform: scale(0.98);
+    }
+
+    .no-btn {
+      background: #fce1e6;
+      color: #a83e4c;
+      border: 2px solid #ffc2c2;
+      transition: left 0.18s ease, top 0.18s ease, background 0.1s;
+      position: fixed;
+      touch-action: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ----- SURPRISE SECTION ----- */
+    .surprise-section {
+      background: rgba(255, 240, 245, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: clamp(32px, 8vw, 48px);
+      padding: clamp(1.6rem, 6vw, 2.2rem) clamp(1.2rem, 5vw, 2rem);
+      border: 2px dashed #ff8cae;
+      box-shadow: 0 20px 35px rgba(255, 70, 120, 0.25);
+      margin-top: 30px;
+      z-index: 25;
+      width: 100%;
+    }
+
+    .surprise-message {
+      font-size: clamp(1.5rem, 6.5vw, 2rem);
+      font-weight: 700;
+      color: #ad3b4f;
+      margin-bottom: 20px;
+      background: #ffeef4;
+      padding: 14px 16px;
+      border-radius: 60px;
+      word-break: break-word;
+    }
+
+    .tap-surprise-btn {
+      background: radial-gradient(circle at 30% 30%, #ff7595, #ff4d6d);
+      border: none;
+      font-size: clamp(1.4rem, 5.8vw, 1.9rem);
+      font-weight: 700;
+      color: white;
+      padding: clamp(14px, 4vw, 18px) clamp(22px, 7vw, 32px);
+      border-radius: 120px;
+      box-shadow: 0 10px 0 #912a3f, 0 12px 25px #ff98aa;
+      transform: translateY(-4px);
+      transition: 0.08s;
+      cursor: pointer;
+      margin: 16px 0 20px;
+      border: 2px solid #fff3f5;
+      display: inline-flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      width: auto;
+      max-width: 100%;
+      word-break: break-word;
+      line-height: 1.3;
+    }
+
+    .tap-surprise-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 4px 0 #7a2234, 0 16px 30px #ffa7b5;
+    }
+
+    /* ----- ROMANTIC VALENTINE CARD - SCROLLABLE LOVE LETTER ----- */
+    .valentine-reveal {
+      margin-top: 32px;
+      background: #fffcfd;
+      border-radius: 48px 48px 48px 16px;
+      padding: clamp(24px, 6vw, 36px) clamp(18px, 5vw, 28px);
+      box-shadow: 0 10px 0 #d64b5e, 0 30px 45px rgba(180, 40, 70, 0.25);
+      border: 6px double #ffadc0;
+      position: relative;
+      transition: 0.2s all;
+      width: 100%;
+    }
+
+    .romantic-card-inner {
+      background: linear-gradient(145deg, #ffe8f0, #fff9fb);
+      padding: clamp(24px, 6vw, 36px) clamp(18px, 5vw, 28px);
+      border-radius: 36px;
+      border: 2px solid white;
+      color: #571f2b;
+      font-size: clamp(1.2rem, 5vw, 1.7rem);
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      align-items: center;
+      word-break: break-word;
+      text-align: center;
+    }
+
+    /* SCROLLABLE LONG LOVE LETTER */
+    .scrollable-love {
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 16px 20px;
+      margin: 10px 0 20px;
+      background: rgba(255, 225, 235, 0.6);
+      border-radius: 32px;
+      width: 100%;
+      scrollbar-width: thin;
+      scrollbar-color: #ff8da1 #ffe6ec;
+      border: 1px solid #ffccd5;
+    }
+
+    .scrollable-love::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .scrollable-love::-webkit-scrollbar-track {
+      background: #ffe6ec;
+      border-radius: 20px;
+    }
+
+    .scrollable-love::-webkit-scrollbar-thumb {
+      background: #ff8da1;
+      border-radius: 20px;
+      border: 2px solid #ffeef2;
+    }
+
+    .love-letter {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      font-size: clamp(1.1rem, 4.5vw, 1.4rem);
+      line-height: 1.7;
+      color: #702c3b;
+      padding: 8px 4px;
+    }
+
+    .love-letter p {
+      background: rgba(255, 255, 255, 0.7);
+      padding: 18px 16px;
+      border-radius: 28px;
+      box-shadow: 0 4px 8px rgba(255, 150, 170, 0.2);
+      margin-bottom: 4px;
+    }
+
+    .big-heart {
+      font-size: clamp(3.2rem, 13vw, 4.5rem);
+      line-height: 1;
+      filter: drop-shadow(0 8px 12px #ff98a8);
+      animation: pulse 1.9s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); text-shadow: 0 0 25px #ff4d6d; }
+      100% { transform: scale(1); }
+    }
+
+    /* ----- SECOND PROPOSAL BUTTONS (inside romantic card) ----- */
+    .second-button-pair {
+      display: flex;
+      gap: clamp(20px, 5vw, 30px);
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 30px 0 15px;
+      width: 100%;
+    }
+
+    .second-yes, .second-no {
+      font-family: 'Quicksand', sans-serif;
+      font-size: clamp(1.3rem, 5.5vw, 1.8rem);
+      font-weight: 700;
+      padding: 12px 32px;
+      border: none;
+      border-radius: 60px;
+      letter-spacing: 1px;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      border: 2px solid white;
+      box-shadow: 0 8px 0 rgba(150, 40, 60, 0.3);
+    }
+
+    .second-yes {
+      background: #ff8cae;
+      color: #4f1e2a;
+      border: 2px solid #ffeef2;
+    }
+
+    .second-yes:active {
+      transform: scale(0.95);
+      box-shadow: 0 4px 0 rgba(150, 40, 60, 0.3);
+    }
+
+    .second-no {
+      background: #ffe0e5;
+      color: #773d4a;
+      border: 2px solid #ffb6c1;
+    }
+
+    .second-no:active {
+      background: #ffccd5;
+    }
+
+    /* ----- PHONE NUMBER REVEAL (final step) ----- */
+    .phone-reveal {
+      margin-top: 25px;
+      padding: 24px 20px;
+      background: rgba(255, 215, 225, 0.7);
+      backdrop-filter: blur(8px);
+      border-radius: 48px;
+      border: 3px solid #ff99aa;
+      box-shadow: 0 10px 20px rgba(255, 80, 120, 0.3);
+      width: 100%;
+      animation: fadeIn 0.5s;
+    }
+
+    .phone-message {
+      font-size: clamp(1.3rem, 5.8vw, 1.8rem);
+      font-weight: 700;
+      color: #8a2e3f;
+      margin-bottom: 12px;
+    }
+
+    .phone-number {
+      font-size: clamp(1.8rem, 7vw, 2.4rem);
+      font-weight: 800;
+      background: white;
+      padding: 14px 22px;
+      border-radius: 60px;
+      display: inline-block;
+      color: #c1345c;
+      letter-spacing: 4px;
+      border: 2px dashed #ff4d6d;
+      box-shadow: 0 6px 0 #d46474;
+      margin: 12px 0;
+      word-break: break-word;
+    }
+
+    .journey-text {
+      font-size: 1.3rem;
+      color: #5a2e38;
+      font-style: italic;
+      margin-top: 18px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 380px) {
+      .second-yes, .second-no { padding: 10px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- moving heart balloons -->
+  <div class="heart-balloons">
+    <div class="heart">❤️🎈</div>
+    <div class="heart">🧡🎈</div>
+    <div class="heart">💖🎈</div>
+    <div class="heart">💗🎈</div>
+    <div class="heart">💘🎈</div>
+    <div class="heart">💕🎈</div>
+    <div class="heart">💓🎈</div>
+    <div class="heart">💞🎈</div>
+    <div class="heart">❣️🎈</div>
+    <div class="heart">💝🎈</div>
+  </div>
+
+  <!-- main valentine container -->
+  <div class="valentine-card" id="mainCard">
+    <h1>💘 Be My Valentine? 💘</h1>
+    
+    <!-- will you be my Valentine question -->
+    <div class="question" id="questionDiv">
+      <span>💌 will you be my Valentine? 💌</span>
+    </div>
+
+    <!-- YES / NO button pair (first) -->
+    <div class="button-pair" id="buttonGroup">
+      <button class="yes-btn" id="yesButton">✅ Yes</button>
+      <button class="no-btn" id="noButton">❌ No</button>
+    </div>
+
+    <!-- surprise area: hidden until YES clicked -->
+    <div id="surpriseContainer" class="surprise-section hidden">
+      <div class="surprise-message">
+        💋 i knew u will say yes! 💋
+      </div>
+      
+      <!-- tap to get surprise button -->
+      <button class="tap-surprise-btn" id="surpriseBtn">
+        🎁 tap to get surprise 💝
+      </button>
+      
+      <!-- ROMANTIC VALENTINE CARD with LOVE LETTER and SECOND PROPOSAL -->
+      <div id="romanticCard" class="valentine-reveal hidden">
+        <div class="romantic-card-inner">
+          
+          <span class="big-heart">❤️❤️❤️</span>
+          
+          <p style="font-size:clamp(1.8rem, 7vw, 2.2rem); font-weight:800; color:#a1354b; margin:5px 0;">
+            My Valentine
+          </p>
+          
+          <div style="display:flex; gap:18px; font-size:clamp(2rem, 8vw, 2.8rem); justify-content:center; flex-wrap:wrap;">
+            🌹💗🌹
+          </div>
+          
+          <!-- SCROLLABLE LONG LOVE LETTER (custom text) -->
+          <div class="scrollable-love">
+            <div class="love-letter">
+              <p>🌹 From the moment you told me you noticed me and felt something, I honestly felt special. 🌹</p>
+              <p>💬 We’ve just started talking, but I already enjoy every conversation with you. 💬</p>
+              <p>✨ There’s something genuine and warm about you that I truly like. ✨</p>
+              <p>💖 This Valentine’s Day, I just want to be honest — I like you, and I’d love to give us a real chance. 💖</p>
+              <p>🌸 Will you be mine? 🌸💕</p>
+            </div>
+          </div>
+          
+          <!-- SECOND PROPOSAL: YES / NO BUTTONS -->
+          <div class="second-button-pair" id="secondButtonGroup">
+            <button class="second-yes" id="secondYesBtn">✅ Yes, I'll be yours</button>
+            <button class="second-no" id="secondNoBtn">❌ Not yet</button>
+          </div>
+
+          <!-- PHONE NUMBER REVEAL (hidden until second Yes) -->
+          <div id="phoneRevealContainer" class="phone-reveal hidden">
+            <div class="phone-message">
+              💕 if u wanna start a journey with me 💕
+            </div>
+            <div class="phone-number">
+              📞 9826138675/9745455285🌸
+            </div>
+            <div class="journey-text">
+              — call me, let's begin our story —
+            </div>
+          </div>
+
+          <div style="display:flex; gap:16px; font-size:2rem; margin-top:10px;">
+            🥀💌🥀
+          </div>
+          
+          <span class="big-heart" style="margin-top:10px;">💗</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      "use strict";
+
+      // ----- ELEMENTS (first layer) -----
+      const yesBtn = document.getElementById('yesButton');
+      const noBtn = document.getElementById('noButton');
+      const buttonGroup = document.getElementById('buttonGroup');
+      const questionDiv = document.getElementById('questionDiv');
+      const surpriseContainer = document.getElementById('surpriseContainer');
+      const romanticCard = document.getElementById('romanticCard');
+      const surpriseBtn = document.getElementById('surpriseBtn');
+      
+      // ----- SECOND LAYER ELEMENTS (inside romantic card) -----
+      const secondYesBtn = document.getElementById('secondYesBtn');
+      const secondNoBtn = document.getElementById('secondNoBtn');
+      const phoneReveal = document.getElementById('phoneRevealContainer');
+      const secondButtonGroup = document.getElementById('secondButtonGroup');
+
+      // ----- 1. FLEEING NO BUTTON (first) -----
+      function getSafePosition() {
+        if (!noBtn) return { left: 0, top: 0 };
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const btnWidth = noBtn.offsetWidth;
+        const btnHeight = noBtn.offsetHeight;
+        
+        let currentLeft = parseFloat(noBtn.style.left) || 0;
+        let currentTop = parseFloat(noBtn.style.top) || 0;
+        
+        if (!noBtn.style.left || noBtn.style.left === 'auto') {
+          const parentRect = noBtn.parentElement?.getBoundingClientRect();
+          const btnRect = noBtn.getBoundingClientRect();
+          if (parentRect) {
+            currentLeft = btnRect.left - parentRect.left + window.scrollX;
+            currentTop = btnRect.top - parentRect.top + window.scrollY;
+          } else {
+            currentLeft = 120; currentTop = 150;
+          }
+        }
+
+        const deltaX = (Math.random() * 440) - 220;
+        const deltaY = (Math.random() * 440) - 220;
+        
+        let newLeft = currentLeft + deltaX;
+        let newTop = currentTop + deltaY;
+        
+        const maxLeft = viewportWidth - btnWidth - 20;
+        const maxTop = viewportHeight - btnHeight - 20;
+        newLeft = Math.min(Math.max(newLeft, 10), maxLeft);
+        newTop = Math.min(Math.max(newTop, 10), maxTop);
+        
+        return { left: newLeft, top: newTop };
+      }
+
+      function moveNoButton() {
+        if (!noBtn) return;
+        const pos = getSafePosition();
+        noBtn.style.position = 'fixed';
+        noBtn.style.left = pos.left + 'px';
+        noBtn.style.top = pos.top + 'px';
+        noBtn.style.transition = 'left 0.18s ease, top 0.18s ease';
+        noBtn.style.zIndex = '9999';
+      }
+
+      function initialNoButtonPosition() {
+        if (!noBtn || !yesBtn) return;
+        const yesRect = yesBtn.getBoundingClientRect();
+        noBtn.style.position = 'fixed';
+        let leftPos = yesRect.right + 25;
+        let topPos = yesRect.top;
+        const viewportWidth = window.innerWidth;
+        const btnWidth = noBtn.offsetWidth;
+        if (leftPos + btnWidth > viewportWidth - 25) {
+          leftPos = yesRect.left;
+          topPos = yesRect.bottom + 20;
+        }
+        noBtn.style.left = leftPos + 'px';
+        noBtn.style.top = topPos + 'px';
+        noBtn.style.transition = 'left 0.2s ease, top 0.2s ease';
+      }
+
+      noBtn.addEventListener('mouseenter', (e) => { e.preventDefault(); moveNoButton(); });
+      noBtn.addEventListener('click', (e) => { e.preventDefault(); moveNoButton(); });
+      noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveNoButton(); }, { passive: false });
+      noBtn.addEventListener('touchmove', (e) => { e.preventDefault(); moveNoButton(); }, { passive: false });
+
+      window.addEventListener('resize', function() {
+        if (noBtn.style.position === 'fixed') {
+          let left = parseFloat(noBtn.style.left) || 0;
+          let top = parseFloat(noBtn.style.top) || 0;
+          const maxX = window.innerWidth - noBtn.offsetWidth - 15;
+          const maxY = window.innerHeight - noBtn.offsetHeight - 15;
+          if (left > maxX) noBtn.style.left = maxX + 'px';
+          if (top > maxY) noBtn.style.top = maxY + 'px';
+          if (left < 10) noBtn.style.left = '10px';
+          if (top < 10) noBtn.style.top = '10px';
+        }
+      });
+
+      // ----- 2. FIRST YES: reveal surprise container -----
+      yesBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (buttonGroup) buttonGroup.style.display = 'none';
+        if (questionDiv) questionDiv.classList.add('hidden');
+        if (noBtn) noBtn.style.display = 'none'; // hide fleeing no button
+        
+        surpriseContainer.classList.remove('hidden');
+        
+        if (!romanticCard.classList.contains('hidden')) {
+          romanticCard.classList.add('hidden');
+        }
+        
+        setTimeout(() => {
+          surpriseContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      });
+
+      // ----- 3. TAP SURPRISE: reveal romantic card (with love letter + second buttons) -----
+      surpriseBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        romanticCard.classList.remove('hidden');
+        surpriseBtn.innerText = '💖 surprise unlocked! 💖';
+        surpriseBtn.disabled = true;
+        surpriseBtn.style.opacity = '0.9';
+        surpriseBtn.style.boxShadow = '0 6px 0 #7a2234';
+        surpriseBtn.style.transform = 'translateY(0px)';
+        
+        // ensure phone reveal is hidden when romantic card first appears
+        if (phoneReveal) phoneReveal.classList.add('hidden');
+        
+        setTimeout(() => {
+          romanticCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+      });
+
+      // ----- 4. SECOND YES: show phone number with message, hide second No -----
+      if (secondYesBtn) {
+        secondYesBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          // hide the second proposal buttons
+          if (secondButtonGroup) secondButtonGroup.classList.add('hidden');
+          // show phone number reveal
+          if (phoneReveal) phoneReveal.classList.remove('hidden');
+          // optional: scroll to phone number
+          setTimeout(() => {
+            phoneReveal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 50);
+        });
+      }
+
+      // ----- 5. SECOND NO: just a playful message (can be extended) -----
+      if (secondNoBtn) {
+        secondNoBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          // playful flee: move second No button? or simple alert?
+          // we'll make it move a bit for fun (without actual fleeing)
+          secondNoBtn.style.transform = 'translateX(10px)';
+          setTimeout(() => secondNoBtn.style.transform = 'translateX(0)', 150);
+          secondNoBtn.style.background = '#ffe0e5';
+          
+          // Optional: you can add a message, but we keep it light
+          alert('💘 take your time, my heart is patient 💘');
+        });
+      }
+
+      // ----- initial positioning for first No button -----
+      window.addEventListener('load', function() {
+        initialNoButtonPosition();
+      });
+
+      window.addEventListener('orientationchange', function() {
+        setTimeout(initialNoButtonPosition, 120);
+      });
+
+    })();
+  </script>
+
+  <style>
+    .hidden { display: none !important; }
+    .scrollable-love { max-height: 380px; }
+    @media (max-height: 700px) { .scrollable-love { max-height: 280px; } }
+    .second-yes, .second-no { cursor: pointer; }
+    .phone-number { user-select: all; } /* easy copy */
+  </style>
+</body>
+</html>
